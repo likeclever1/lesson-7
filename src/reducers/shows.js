@@ -1,38 +1,43 @@
 import { omit } from 'lodash';
+import { combineReducers } from 'redux';
+import { handleActions } from 'redux-actions';
+
 import {
-    FETCH_MOVIE,
-    FETCH_MOVIE_SUCCESS,
-    FETCH_MOVIE_ERROR
-} from '../actions/index';
+    showRequest,
+    showSuccess,
+    showFailure
+} from '../actions/show';
 
-const initialState = {
-    isFetching: false,
-    entities: []
-}
+const isFetching = handleActions(
+    {
+        [showRequest]: () => true,
+        [showSuccess]: () => false,
+        [showFailure]: () => false
+    },
+    false
+);
 
-const shows = (state = initialState, action) => {
-    switch(action.type) {
-        case FETCH_MOVIE:
-            return {
-                isFetching: true,
-                entities: [...state.entities]
-            };
-        case FETCH_MOVIE_SUCCESS:
-            return {
-                isFetching: false,
-                entities: [
-                    ...state.entities,
-                    {
-                        cast: [...action.payload._embedded.cast],
-                        ...omit(action.payload, ['_links', '_embedded'])
-                    }
-                ]
-            };
-        case FETCH_MOVIE_ERROR:
-            return initialState;
-        default:
-            return state;
-    }
-}
+const entities = handleActions(
+    {
+        [showSuccess]: (state, action) => {
+            return [
+                ...state,
+                {
+                    cast: [...action.payload._embedded.cast],
+                    ...omit(action.payload, ['_links', '_embedded'])
+                }
+            ]
+        },
+        [showFailure]: (state, action) => {
+            return [
+                ...state
+            ]
+        }
+    },
+    []
+);
 
-export default shows;
+export default combineReducers({
+    isFetching,
+    entities
+});

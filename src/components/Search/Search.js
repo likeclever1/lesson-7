@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchMovies } from '../../actions/index';
 import SearchItem from './SearchItem';
+import {
+    searchRequest
+} from '../../actions/search';
 
 class Search extends React.Component {
     constructor() {
@@ -24,9 +26,7 @@ class Search extends React.Component {
             onSearch
         } = this.props;
 
-        onSearch({
-            query: this.state.query
-        })
+        onSearch(this.state.query)
     }
     render() {
         const {
@@ -62,7 +62,7 @@ const mapStateToProps = ({search}) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onSearch(query) {
-        dispatch(fetchMovies(query))
+        dispatch(searchRequest(query))
     }
 });
 

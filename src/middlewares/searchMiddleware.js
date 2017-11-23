@@ -1,27 +1,24 @@
 import { search } from '../api';
 
 import {
-    FETCH_MOVIES
-} from "../actions/index";
-
-import {
-    fetchMoviesSuccess,
-    fetchMoviesError
-} from '../actions/index';
+    SEARCH_REQUEST,
+    searchSuccess,
+    searchFailure
+} from '../actions/search';
 
 const searchMiddleware = store => next => action => {
     const result = next(action);
 
-    if (action.type === FETCH_MOVIES) {
+    if (action.type === SEARCH_REQUEST) {
         search(action.query)
           .then(data => {
             store.dispatch(
-                fetchMoviesSuccess(data)
+                searchSuccess(data)
             );
           })
           .catch(err => {
             store.dispatch(
-                fetchMoviesError(err)
+                searchFailure(err)
             );
           })
     }

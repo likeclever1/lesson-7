@@ -1,27 +1,24 @@
 import { show } from '../api';
 
 import {
-    FETCH_MOVIE
-} from "../actions/index";
-
-import {
-    fetchMovieSuccess,
-    fetchMovieError
-} from '../actions/index';
+    showRequest,
+    showSuccess,
+    showFailure
+} from '../actions/show';
 
 const showMiddleware = store => next => action => {
     const result = next(action);
 
-    if (action.type === FETCH_MOVIE) {
-        show(action.id)
+    if (action.type === showRequest.toString()) {
+        show(action.payload.id)
             .then(data => {
                 store.dispatch(
-                    fetchMovieSuccess(data)
+                    showSuccess(data)
                 );
             })
             .catch(err => {
                 store.dispatch(
-                    fetchMovieError(err)
+                    showFailure(err)
                 );
             })
         ;

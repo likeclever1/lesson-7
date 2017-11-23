@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-    fetchMovie
-} from '../../actions';
-
+import { getShow, getIsFetching } from './ShowPage.selector';
 import CastItem from './CastItem';
+import {
+    showRequest
+} from '../../actions/show';
 
 class ShowPage extends React.Component {
     componentDidMount() {
@@ -23,16 +23,15 @@ class ShowPage extends React.Component {
             isFetching
         } = this.props;
 
-        if (isFetching) {
-            return 'Загрузка...';
-        }
+        if (isFetching) return 'Загрузка...';
 
         return (
             <div>
                 {!show ? null
                 : (<div>
                     <p>{show.name}</p>
-                    <img src={show.image ? show.image.medium : null} alt={show.name}/>
+                    {show.image && show.image.medium ?
+                        <img src={show.image.medium} alt={show.name}/> : null}
                     <div dangerouslySetInnerHTML={{__html: show.summary}}></div>
                     {!show.cast || !show.cast.length ? null :
                         <div>
@@ -48,17 +47,17 @@ class ShowPage extends React.Component {
     }
 }
 
+const mapStateToProps = (state, props) => ({
+    isFetching: getIsFetching(state),
+    show: getShow(state, props)
+});
+
 const mapDispatchToProps = (dispatch, { match }) => ({
     getMovie() {
         if (match.params && match.params.id){
-            dispatch(fetchMovie(match.params.id));
+            dispatch(showRequest({id: match.params.id}));
         }
     }
-});
-
-const mapStateToProps = ({shows}, { match }) => ({
-    isFetching: shows.isFetching,
-    show: shows.entities.find(item => item.id === parseInt(match.params.id, 10)) // TODO: add selector
 });
 
 export default connect(

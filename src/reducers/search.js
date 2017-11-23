@@ -1,8 +1,8 @@
 import {
-    FETCH_MOVIES,
-    FETCH_MOVIES_SUCCESS,
-    FETCH_MOVIES_ERROR
-} from '../actions/index';
+    SEARCH_REQUEST,
+    SEARCH_SUCCESS,
+    SEARCH_FAILURE
+} from '../actions/search';
 
 const initialState = {
     isFetching: false,
@@ -11,18 +11,19 @@ const initialState = {
 
 const search = (state = initialState, action) => {
     switch(action.type) {
-        case FETCH_MOVIES:
+        case SEARCH_REQUEST:
             return {
-                ...state,
                 isFetching: true
             };
-        case FETCH_MOVIES_SUCCESS:
+        case SEARCH_SUCCESS:
             return {
                 isFetching: false,
                 result: [...action.payload]
             };
-        case FETCH_MOVIES_ERROR:
-            return initialState;
+        case SEARCH_FAILURE:
+            return {
+                isFetching: false
+            };
         default:
             return state;
     }
